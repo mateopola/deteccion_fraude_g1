@@ -1,8 +1,8 @@
 # Dataset (471MB - excede limite de GitHub 100MB)
 data/PS_20174392719_1491204439457_log.csv
-data/external/
-data/processed/
-data/raw/
+
+# Reportes generados
+docs/eda_report.html
 
 # Python
 __pycache__/

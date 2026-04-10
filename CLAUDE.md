@@ -22,17 +22,13 @@
 deteccion_fraude_grupo_1/
 ├── CLAUDE.md                          ← este archivo
 ├── data/
-│   └── PS_20174392719_1491204439457_log.csv
+│   └── PS_20174392719_1491204439457_log.csv  ← excluido de git (471MB)
 ├── docs/
 │   ├── entregables.md                 ← checklist oficial del taller
 │   ├── plan_implementacion.md         ← plan tecnico detallado
 │   ├── marco_teorico_resumen.md       ← resumen de la investigacion
 │   └── investigacion_marco_teorico.pdf ← fuente original (98 refs)
-├── notebooks/
-│   ├── 01_eda.ipynb                   ← Punto 2 del taller
-│   ├── 02_balanceo.ipynb              ← Punto 3 del taller
-│   ├── 03_modelos.ipynb               ← Punto 4 del taller
-│   └── 04_evaluacion_ganancia.ipynb   ← Punto 5 del taller
+├── Evaluación_sumativa_grupal_–_Detección_de_fraude.ipynb  ← UNICO NOTEBOOK
 └── requirements.txt
 ```
 
