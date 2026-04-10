@@ -563,8 +563,39 @@ para(doc,
     'FP=0 elimina el riesgo de acciones de tutela por bloqueo indebido (Art. 15 CN, '
     'Sentencia T-255/22 — Corte Constitucional, 2022).'
 )
+# Matriz de confusión 2×2 del ganador
+para(doc, 'Matriz de Confusión — RF(100) + Oversampling + threshold=0,5 (X_test fijo):', bold=True, size=9)
+cm_data = [
+    ['', 'Predicho: Legítima', 'Predicho: Fraude'],
+    ['Real: Legítima', 'TN = 98.357', 'FP = 0'],
+    ['Real: Fraude',   'FN = 3',       'TP = 1.640'],
+]
+tbl_cm = doc.add_table(rows=3, cols=3)
+tbl_cm.style = 'Table Grid'
+cm_colors = [
+    [None, None, None],
+    [None, '#C8E6C9', '#FFCDD2'],   # TN verde, FP rojo
+    [None, '#FFCDD2', '#C8E6C9'],   # FN rojo, TP verde
+]
+for r, row_data in enumerate(cm_data):
+    for c, val in enumerate(row_data):
+        cell = tbl_cm.cell(r, c)
+        cell.text = val
+        for run in cell.paragraphs[0].runs:
+            run.font.size = Pt(8.5)
+            run.font.name = 'Times New Roman'
+            run.bold = (r == 0 or c == 0)
+cap_cm = doc.add_paragraph()
+cap_cm.alignment = WD_ALIGN_PARAGRAPH.CENTER
+r_cap_cm = cap_cm.add_run(
+    'Tabla 2. Matriz de confusión del modelo ganador sobre X_test (100.000 registros).\n'
+    'GN = (1.640 × $100) − (0 × $33) = $164.000. FP=0 elimina el riesgo legal '
+    'del Art. 15 CN (Sentencia T-255/22). Fuente: elaboración propia.'
+)
+r_cap_cm.font.size = Pt(8); r_cap_cm.italic = True; r_cap_cm.font.name = 'Times New Roman'
+
 # Tabla de métricas del ganador
-para(doc, 'Tabla 2. Métricas completas del modelo ganador (X_test fijo, 20% estratificado):', bold=True, size=9)
+para(doc, 'Tabla 3. Métricas completas del modelo ganador (X_test fijo, 20% estratificado):', bold=True, size=9)
 tbl_metrics = [
     ['Modelo', 'Dataset', 'Threshold', 'TP', 'FP', 'FN', 'TN', 'Precision', 'Recall', 'F1', 'AUC', 'GN ($)'],
     ['RF(100)', 'Oversampling', '0,5', '1.640', '0', '3', '98.357', '1,0000', '0,9982', '0,9991', '0,9994', '$164.000'],
@@ -585,7 +616,7 @@ for r, row_data in enumerate(tbl_metrics):
 cap_m = doc.add_paragraph()
 cap_m.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r_cap_m = cap_m.add_run(
-    'Tabla 2. Métricas del modelo ganador y configuraciones equivalentes. '
+    'Tabla 3. Métricas del modelo ganador y configuraciones equivalentes. '
     'RF(100) + Oversampling + t=0,5: GN=$164.000, Precision=1,0000, Recall=0,9982, F1=0,9991, AUC=0,9994.'
 )
 r_cap_m.font.size = Pt(8); r_cap_m.italic = True; r_cap_m.font.name = 'Times New Roman'
@@ -706,6 +737,21 @@ para(doc,
 # REFERENCIAS
 # ════════════════════════════════════════════════════════════
 heading(doc, 'REFERENCIAS', 1)
+
+nota_biblio = doc.add_paragraph()
+nota_biblio.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+nota_biblio.paragraph_format.space_after = Pt(8)
+r_nota = nota_biblio.add_run(
+    'Nota bibliográfica: Las fuentes académicas citadas en este documento fueron consultadas '
+    'a través de las bases de datos Scopus, Web of Science (WoS) e IEEE Xplore, disponibles '
+    'mediante acceso institucional en el Sistema de Bibliotecas (SIBILA) de la Pontificia '
+    'Universidad Javeriana. Las fuentes normativas y jurisprudenciales fueron consultadas '
+    'directamente en los portales oficiales de la Corte Constitucional, Corte Suprema de '
+    'Justicia y Superintendencia Financiera de Colombia.'
+)
+r_nota.font.size = Pt(8.5)
+r_nota.font.name = 'Times New Roman'
+r_nota.italic = True
 
 refs = [
     'ACM FAccT. (2020). Fairness, Accountability, and Transparency in Machine Learning. '
