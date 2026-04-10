@@ -183,7 +183,7 @@ run = abs_p.add_run(
     'Banco Falabella Colombia, vigilada por la Superintendencia Financiera de Colombia (SFC) y '
     'sujeta al SARLAFT (Decreto 1674/2021). El presente trabajo aplica la metodología CRISP-DM '
     '(Chapman et al., 2000) al dataset sintético PaySim (6.362.620 transacciones), utilizando '
-    'muestreo estratificado de 500.000 registros para preservar la distribución de fraudes (0,13%). '
+    'muestreo estratificado asimétrico de 500.000 registros para preservar la totalidad de los casos de fraude del dataset original. '
     'Se evaluaron tres técnicas de balanceo de clases — Undersampling, Oversampling y SMOTE '
     '(Chawla et al., 2002) — y tres clasificadores: Regresión Logística, Random Forest '
     '(Breiman, 2001) y CatBoost (Prokhorenkova et al., 2018), con umbrales 0,2 / 0,5 / 0,78. '
@@ -428,7 +428,7 @@ heading(doc, '3. PREPARACIÓN DE LOS DATOS', 1)
 heading(doc, '3.1. Pipeline de Preprocesamiento', 2)
 para(doc,
     'El pipeline de preprocesamiento aplicó las siguientes transformaciones sobre el dataset '
-    'de 500.000 registros muestreados estratificadamente: (i) eliminación de nameOrig, nameDest '
+    'de 500.000 registros mediante muestreo estratificado asimétrico: (i) eliminación de nameOrig, nameDest '
     'e isFlaggedFraud (Kaufman et al., 2012); (ii) one-hot encoding de type (5 categorías → '
     '4 dummies); (iii) ingeniería de características: hour = step % 24, codificación cíclica '
     'hour_sin/hour_cos (Hipel & McLeod, 1994), error_balance_orig y error_balance_dest '
