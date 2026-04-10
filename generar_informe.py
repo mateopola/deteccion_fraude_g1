@@ -742,16 +742,16 @@ nota_biblio = doc.add_paragraph()
 nota_biblio.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 nota_biblio.paragraph_format.space_after = Pt(8)
 r_nota = nota_biblio.add_run(
-    'Nota bibliográfica: Las fuentes académicas citadas en este documento fueron consultadas '
-    'a través de las bases de datos Scopus, Web of Science (WoS) e IEEE Xplore, disponibles '
-    'mediante acceso institucional en el Sistema de Bibliotecas (SIBILA) de la Pontificia '
-    'Universidad Javeriana. Las fuentes normativas y jurisprudenciales fueron consultadas '
-    'directamente en los portales oficiales de la Corte Constitucional, Corte Suprema de '
-    'Justicia y Superintendencia Financiera de Colombia.'
+    'Nota bibliográfica: Las referencias académicas de este documento corresponden a '
+    'publicaciones indexadas en Scopus, Web of Science (WoS) e IEEE Xplore '
+    '(Chawla et al., 2002; He & Garcia, 2009; Prokhorenkova et al., 2018; '
+    'Obermeyer et al., 2019; Dal Pozzolo et al., 2015; Breiman, 2001), '
+    'garantizando la calidad y trazabilidad de las fuentes citadas. '
+    'Las fuentes normativas y jurisprudenciales fueron verificadas en los portales '
+    'oficiales de la Corte Constitucional, Corte Suprema de Justicia y '
+    'Superintendencia Financiera de Colombia.'
 )
-r_nota.font.size = Pt(8.5)
-r_nota.font.name = 'Times New Roman'
-r_nota.italic = True
+r_nota.font.size = Pt(8.5); r_nota.font.name = 'Times New Roman'; r_nota.italic = True
 
 refs = [
     'ACM FAccT. (2020). Fairness, Accountability, and Transparency in Machine Learning. '
