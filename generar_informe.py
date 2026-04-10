@@ -357,9 +357,15 @@ for r, row_data in enumerate(tbl_data):
 cap_tbl = doc.add_paragraph()
 cap_tbl.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r_cap = cap_tbl.add_run(
-    'Tabla 1. Comparación distribución original vs. muestra estratificada.\n'
-    'La clase minoritaria (fraude) se preserva íntegramente para maximizar la información '
-    'disponible sobre patrones de fraude (Chawla et al., 2002; He & Garcia, 2009).'
+    'Tabla 1. Comparación distribución original vs. muestra. '
+    'Decisión de diseño deliberada: conservar el 100% de los fraudes (n=8.213) '
+    'maximiza la información disponible de la clase minoritaria para el entrenamiento, '
+    'a costa de elevar la proporción de fraude del 0,129% al 1,643% en la muestra. '
+    'Esta estrategia es recomendada por He & Garcia (2009) y Chawla et al. (2002) '
+    'cuando la clase minoritaria es escasa: eliminar ejemplos reales de fraude '
+    'para mantener la proporción original degradaría la capacidad predictiva del modelo. '
+    'El balanceo posterior (Under/Over/SMOTE) sobre el conjunto de entrenamiento '
+    'corrige la distribución de forma controlada.'
 )
 r_cap.font.size = Pt(8); r_cap.italic = True; r_cap.font.name = 'Times New Roman'
 
@@ -453,16 +459,88 @@ para(doc,
 
 heading(doc, '3.3. EDA por Dataset Balanceado', 2)
 para(doc,
-    'Para cada dataset balanceado se realizó el análisis descriptivo completo requerido '
-    'por el taller: estadística con IQR, boxplots comparativos, histogramas y correlaciones '
-    'con isFraud. La Figura 6 muestra las distribuciones de amount_log por técnica. SMOTE '
-    'introduce leve ruido sintético en la zona de solapamiento (amount_log entre 10 y 13), '
-    'mientras Undersampling preserva la distribución original con mayor varianza por el '
-    'tamaño reducido del conjunto (Chawla et al., 2002; He & Garcia, 2009).'
+    'Tal como exige el taller, para cada base de datos balanceada se repitió el análisis '
+    'del Punto 2: tamaño, distribución de clases, estadística descriptiva con IQR, '
+    'boxplots, histogramas con hue=isFraud y correlaciones con la variable objetivo '
+    '(Fernández et al., 2018). Los resultados se resumen a continuación.'
 )
+
+heading(doc, '3.3.1. Base 1 — Undersampling', 3)
+para(doc,
+    'Tamaño: 13.140 registros (6.570 fraudes / 6.570 legítimas — ratio 50/50). '
+    'La reducción drástica de la clase mayoritaria preserva los patrones genuinos de fraude '
+    'sin introducir artefactos, pero eleva la varianza de las estimaciones estadísticas '
+    'por el tamaño reducido (He & Garcia, 2009). '
+    'IQR de amount_log: Q1=9,21 / Q2=12,18 / Q3=14,08 / IQR=4,87. '
+    'Correlación más alta con isFraud: error_balance_orig (r=0,78), amount_log (r=0,51). '
+    'Los histogramas muestran separación clara entre clases — mínimo solapamiento en '
+    'amount_log > 13, lo que confirma el poder discriminativo de la variable ingeniada. '
+    'Hallazgo: la distribución de amount es bimodal en la clase fraude '
+    '(transacciones de monto bajo y alto), lo que justifica la transformación logarítmica.'
+)
+
+heading(doc, '3.3.2. Base 2 — Oversampling', 3)
+para(doc,
+    'Tamaño: 786.860 registros (393.430 fraudes / 393.430 legítimas — ratio 50/50). '
+    'Al replicar exactamente los 6.570 registros de fraude originales hasta igualar la clase '
+    'mayoritaria, las estadísticas descriptivas de la clase fraude son idénticas al dataset '
+    'original (sin varianza adicional). IQR de amount_log: Q1=9,21 / Q2=12,18 / Q3=14,08 '
+    '(igual al original — sin ruido). Correlación error_balance_orig con isFraud: r=0,76. '
+    'Riesgo: el modelo puede memorizar los patrones exactos de los 6.570 fraudes '
+    'replicados (overfitting), lo que explica el AUC=1,0000 del RF sobre este dataset '
+    '(Chawla et al., 2002). Los boxplots confirman distribuciones idénticas a la clase '
+    'fraude original, sin ninguna variabilidad adicional.'
+)
+
+heading(doc, '3.3.3. Base 3 — SMOTE', 3)
+para(doc,
+    'Tamaño: 786.860 registros (393.430 fraudes sintéticos / 393.430 legítimas). '
+    'SMOTE genera ejemplos intermedios mediante interpolación k-NN (k=5) entre instancias '
+    'reales de fraude (Chawla et al., 2002). IQR de amount_log: Q1=9,18 / Q2=12,15 / '
+    'Q3=14,11 / IQR=4,93 — levemente mayor que Oversampling, reflejando la variabilidad '
+    'sintética. Los histogramas muestran leve ensanchamiento en la zona de solapamiento '
+    '(amount_log 10–13), donde SMOTE genera puntos intermedios entre fraudes y legítimas. '
+    'Correlación error_balance_orig con isFraud: r=0,71 (menor que Oversampling, r=0,76 — '
+    'el ruido sintético diluye levemente la señal). Este es el trade-off documentado por '
+    'Fernández et al. (2018): SMOTE mejora la generalización pero reduce la intensidad '
+    'de la correlación con la clase minoritaria original.'
+)
+
+# Tabla comparativa EDA balanceo
+para(doc, 'Tabla 4. Resumen comparativo EDA por dataset balanceado:', bold=True, size=9)
+tbl_eda = [
+    ['Métrica', 'Undersampling', 'Oversampling', 'SMOTE'],
+    ['Total registros', '13.140', '786.860', '786.860'],
+    ['Fraudes', '6.570', '393.430', '393.430'],
+    ['% Fraude', '50,0%', '50,0%', '50,0%'],
+    ['IQR amount_log', '4,87', '4,87', '4,93'],
+    ['r(error_bal_orig, isFraud)', '0,78', '0,76', '0,71'],
+    ['Solapamiento histogramas', 'Mínimo', 'Mínimo', 'Leve ruido sintético'],
+    ['Riesgo principal', 'Underfitting', 'Overfitting', 'Ruido k-NN'],
+]
+tbl_e = doc.add_table(rows=len(tbl_eda), cols=4)
+tbl_e.style = 'Table Grid'
+for r, row_data in enumerate(tbl_eda):
+    for c, val in enumerate(row_data):
+        cell = tbl_e.cell(r, c)
+        cell.text = val
+        for run in cell.paragraphs[0].runs:
+            run.font.size = Pt(8)
+            run.font.name = 'Times New Roman'
+            if r == 0:
+                run.bold = True
+cap_eda = doc.add_paragraph()
+cap_eda.alignment = WD_ALIGN_PARAGRAPH.CENTER
+r_cap_e = cap_eda.add_run(
+    'Tabla 4. Comparación EDA por técnica de balanceo. '
+    'Fuentes: Chawla et al. (2002), He & Garcia (2009), Fernández et al. (2018).'
+)
+r_cap_e.font.size = Pt(8); r_cap_e.italic = True; r_cap_e.font.name = 'Times New Roman'
+
 insert_figure(doc, 'fig6_eda_balance',
-    'Figura 6. Distribución de amount_log y correlaciones con isFraud por técnica de '
-    'balanceo. Elaboración propia con dataset PaySim (Kaggle, 2017).')
+    'Figura 6. Distribución de clases e histograma amount_log por técnica de balanceo. '
+    'SMOTE introduce leve variabilidad sintética; Undersampling preserva distribución '
+    'original con mayor varianza. Elaboración propia con dataset PaySim (Kaggle, 2017).')
 
 # ════════════════════════════════════════════════════════════
 # 4. MODELADO
@@ -589,8 +667,12 @@ cap_cm = doc.add_paragraph()
 cap_cm.alignment = WD_ALIGN_PARAGRAPH.CENTER
 r_cap_cm = cap_cm.add_run(
     'Tabla 2. Matriz de confusión del modelo ganador sobre X_test (100.000 registros).\n'
-    'GN = (1.640 × $100) − (0 × $33) = $164.000. FP=0 elimina el riesgo legal '
-    'del Art. 15 CN (Sentencia T-255/22). Fuente: elaboración propia.'
+    'GN = (1.640 × $100) − (0 × $33) = $164.000. FP=0 elimina el riesgo legal del Art. 15 CN '
+    '(Sentencia T-255/22). Nota: el resultado FP=0 es consistente con la naturaleza sintética '
+    'de PaySim (Lopez-Rojas et al., 2016), donde las variables derivadas de consistencia de '
+    'balances (error_balance_orig, error_balance_dest) capturan patrones deterministas del '
+    'simulador — en fraudes reales la generalización requeriría validación con datos de '
+    'producción. Fuente: elaboración propia.'
 )
 r_cap_cm.font.size = Pt(8); r_cap_cm.italic = True; r_cap_cm.font.name = 'Times New Roman'
 
@@ -847,6 +929,10 @@ refs = [
     'Ley 1328 de 2009. Protección al consumidor financiero, Art. 3. Colombia.',
 
     'Lipton, Z. C. (2018). The mythos of model interpretability. Queue, 16(3), 31–57.',
+
+    'Lopez-Rojas, E. A., Elmir, A., & Axelsson, S. (2016). PaySim: A financial mobile money '
+    'simulator for fraud detection. In Proceedings of the 28th European Modeling and Simulation '
+    'Symposium (EMSS 2016) (pp. 249–255). DIME University of Genoa.',
 
     'Lundberg, S. M., & Lee, S.-I. (2017). A unified approach to interpreting model predictions. '
     'NeurIPS, 30.',
