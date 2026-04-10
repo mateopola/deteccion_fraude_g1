@@ -1,189 +1,212 @@
 # Entregables - Deteccion de Fraude
 **Especializacion en IA | Modulo 4 | Pontificia Universidad Javeriana**
 **Metodologia:** CRISP-DM
-**Dataset:** PaySim - Synthetic Financial Datasets For Fraud Detection (Kaggle)
+**Dataset:** PaySim — Synthetic Financial Datasets For Fraud Detection (Kaggle)
+**Fuente de contexto:** https://www.portal.euromonitor.com/magazine/homemain
 
 ---
 
 ## PUNTO 1 — Entendimiento del Negocio
 
-### 1.1 Contexto del caso
-- [x] Descripcion del problema de fraude financiero *(celda 1.2 del notebook)*
-- [ ] Relevancia del problema en el sector financiero con datos de mercado *(falta citar Euromonitor — perdidas >$33.5B USD, crecimiento m-commerce 250%)*
+> El taller exige: contexto del caso, marco legal, entidad financiera con elementos financieros/tecnicos/operacionales, etica. **Toda la informacion debe estar citada de fuentes confiables y relevantes.**
 
-### 1.2 Marco legal (Colombia)
-- [x] **Art. 246 Codigo Penal** — Estafa *(celda 1.4)*
-- [x] **Art. 316 Codigo Penal** — Captacion masiva de dineros *(celda 1.4)*
-- [x] **Art. 323 Codigo Penal** — Lavado de activos + SARLAFT *(celda 1.4)*
-- [x] **Art. 327 Codigo Penal** — Enriquecimiento ilicito *(celda 1.4)*
-- [x] **Art. 2341 Codigo Civil** — Responsabilidad civil extracontractual *(celda 1.4)*
-- [x] **Art. 15 Constitucion Politica** — Habeas Data *(celda 1.4)*
-- [x] Otros articulos relevantes: Ley 1266/2008, Ley 1328/2009, Circular SFC 29/2014 *(celda 1.4)*
-- [x] Como afecta al usuario cada norma *(descrito en cada articulo)*
-- [x] Cual seria el debido proceso de la organizacion ante un caso de fraude *(celda 1.5 — 3 dimensiones)*
+### 1.1 Contexto del caso — Deteccion de Fraude
+- [x] Descripcion del problema de fraude financiero
+- [x] Contexto con datos de mercado citados (Euromonitor 2024-2025: perdidas >$33.5B USD, m-commerce +250%)
 
-### 1.3 Entidad financiera seleccionada: **Banco Falabella**
-- [x] Describir sus elementos **financieros** relevantes *(celda 1.3 — perfil financiero, CMR, segmento)*
-- [x] Describir sus elementos **tecnicos** *(celda 1.3 — app, web, Visa/Mastercard, tiempo real)*
-- [x] Describir sus elementos **operacionales** *(celda 1.3 — SARLAFT, canales digitales, bloqueo/reactivacion)*
-- [ ] Toda la informacion debe estar citada de fuentes confiables
-  - **PENDIENTE:** agregar citas especificas (reporte Falabella, SFC, noticias sectoriales)
+### 1.2 Marco legal — obligatorio por el taller
+- [x] **Art. 246 Codigo Penal** — Estafa: como afecta al usuario
+- [x] **Art. 316 Codigo Penal** — Captacion masiva de dineros
+- [x] **Art. 323 Codigo Penal** — Lavado de activos + SARLAFT
+- [x] **Art. 327 Codigo Penal** — Enriquecimiento ilicito
+- [x] **Art. 2341 Codigo Civil** — Responsabilidad extracontractual: banco debe restituir fondos por FN
+- [x] **Art. 15 Constitucion Politica** — Habeas Data: FP vulnera derechos del cliente
+- [x] Otros relevantes: Ley 1266/2008, Ley 1328/2009, Circular SFC 29/2014, Sentencia T-255/22
+- [x] Como afecta al usuario cada norma (descrito por articulo)
+- [x] Debido proceso de la organizacion ante un caso de fraude (3 dimensiones: tecnica, operacional, legal)
+
+### 1.3 Entidad financiera: Banco Falabella
+- [x] Elementos **financieros**: perfil, tarjeta CMR, segmento retail, cartera
+- [x] Elementos **tecnicos**: app, web, Visa/Mastercard, procesamiento en tiempo real
+- [x] Elementos **operacionales**: SARLAFT, canales digitales, protocolo bloqueo/reactivacion
+- [ ] **PENDIENTE:** citas especificas con fuentes verificables (reporte anual Grupo Falabella, SFC, noticias sectoriales)
 
 ### 1.4 Etica en la toma de decisiones
-- [x] Como la toma de decisiones automatizada implica un tema etico *(celda 1.6 — FAccT, sesgo, caja negra)*
-- [x] Introduccion etica desarrollada *(se profundiza en Punto 6)*
+- [x] Como la toma de decisiones automatizada implica un tema etico
+- [x] FAccT framework (Fairness, Accountability, Transparency)
+- [x] Sesgo algoritmico: thin-file, discriminacion demografica
+- [x] Problema de la caja negra: RF y CatBoost opacos ante juez de tutela
+- [x] Solucion XAI: SHAP y LIME citados con fuente
 
 ---
 
 ## PUNTO 2 — Entendimiento de los Datos
 
-> Aplicar sobre el dataset original (sin balancear)
+> El taller exige: tamano, faltantes/tipos, estadistica descriptiva con interpretacion, histogramas/correlacion/boxplots. Aplicar sobre el dataset **original sin balancear**.
 
-### 2a. Tamanno de la base de datos
-- [x] Numero de filas y columnas *(6.362.620 filas x 11 columnas — ejecutado, celda 11)*
-- [x] Descripcion de cada variable *(diccionario completo en celda 6)*
+### 2a. Tamano de la base de datos
+- [x] Numero de filas y columnas (6.362.620 x 11)
+- [x] Descripcion de cada variable (diccionario completo)
 
-### 2b. Calidad de los datos
-- [ ] Valores faltantes por columna *(pandas_profiling corre pero no hay celda explicita — verificar)*
-- [ ] Tipos de variables explicitamente documentados *(esta en profiling pero falta celda dedicada)*
-- [ ] Valores unicos por variable categorica *(falta)*
-- [ ] Duplicados *(falta celda explicita)*
+### 2b. Datos faltantes y tipo de variables
+- [x] Tipos de variables (`df.info()` ejecutado)
+- [x] Valores faltantes (cubiertos por ydata_profiling — reporte HTML)
+- [ ] Valores unicos por variable categorica *(pendiente — celda dedicada)*
+- [ ] Duplicados *(pendiente — celda dedicada)*
 
-### 2c. Analisis estadistico descriptivo
-- [x] Media, mediana, desviacion estandar *(pandas_profiling — celda 20)*
-- [x] Minimo, maximo *(pandas_profiling — celda 20)*
-- [ ] Percentiles Q1, Q2, Q3 e IQR explicitamente *(el profiling los incluye pero falta tabla dedicada con interpretacion)*
-- [ ] Interpretacion de los resultados por variable *(falta texto explicativo por variable)*
-- [x] Distribucion de `isFraud` — 99.87% no fraude / 0.13% fraude *(celda 15/47)*
+### 2c. Analisis estadistico con interpretacion
+- [x] Media, mediana, std, minimo, maximo (ydata_profiling)
+- [ ] **Rangos intercuartilicos (Q1, Q2, Q3, IQR) con tabla e interpretacion** *(pendiente — exigido explicitamente por el taller)*
+- [x] Distribucion de isFraud: 99.87% no fraude / 0.13% fraude
 
 ### 2d. Visualizaciones
-- [ ] **Histogramas** comparando fraude vs no fraude *(hay histogramas pero sin hue=isFraud — falta solapamiento)*
-- [x] **Matriz de correlacion** *(heatmap ejecutado — celda 23)*
-- [x] **Boxplots** por variable *(celda 21 — ejecutado)*
-- [ ] Distribucion de `type` vs `isFraud` *(falta countplot de tipo de transaccion)*
-- [x] Correlaciones con `isFraud` *(celda 45 — ordenadas)*
+- [ ] **Histogramas con solapamiento fraude vs no-fraude** *(pendiente — exigido explicitamente: "ver si estas estan relacionadas")*
+- [x] **Correlacion** — heatmap (identificar multicolinealidades)
+- [x] **Boxplots** por variable numerica
+- [ ] **Distribucion de `type` vs `isFraud`** (countplot) *(pendiente)*
+- [x] Correlaciones con isFraud ordenadas
+- [x] Hallazgo documentado: solo TRANSFER y CASH_OUT tienen fraude
 
 ---
 
 ## PUNTO 3 — Preparacion de los Datos
 
-### 3.1 Transformaciones generales
-- [x] Encoding `type` → one-hot encoding *(celda 35)*
-- [ ] Eliminacion `nameOrig`, `nameDest`, `isFlaggedFraud` — **BUG: `isFlaggedFraud` NO fue eliminada** *(sigue en celda 44)*
-- [x] Tratamiento de outliers — transformacion logaritmica *(celdas 27-28)*
-- [x] Estandarizacion con StandardScaler *(celda 29)* — **ADVERTENCIA: scaler aplicado antes del split (data leakage)**
-- [x] Feature engineering: `hour`, `hour_sin`, `hour_cos`, `error_balance_orig`, `error_balance_dest` *(celdas 31-39)*
+> El taller exige: transformaciones + 3 bases balanceadas. **Para cada base repetir el analisis del Punto 2.**
 
-### 3.2 Tres bases de datos balanceadas
-> Muestra de 500.000 registros (estratificada) — justificado por recursos computacionales
+### 3.1 Transformaciones
+- [x] Eliminar: `nameOrig`, `nameDest`, `isFlaggedFraud`
+- [x] Encoding: `type` → one-hot encoding
+- [x] Feature engineering: `hour`, `hour_sin`, `hour_cos`, `error_balance_orig`, `error_balance_dest`
+- [x] Transformacion logaritmica para outliers
+- [x] Split train/test 80/20 con `stratify=y`
+- [x] StandardScaler POST-SPLIT (anti data leakage)
 
-#### Base 1 — Undersampling
-- [x] Aplicar RandomUnderSampler *(celda 54)*
-- [ ] Documentar tamanno resultante *(falta print del shape)*
-- [ ] Repetir analisis Punto 2 *(NO realizado)*
+### 3.2 Base 1 — Undersampling
+- [x] `RandomUnderSampler(random_state=42)`
+- [x] Tamano documentado
+- [x] EDA Punto 2: distribucion de clases + histograma amount_log
+- [ ] EDA Punto 2 completo (estadistica descriptiva, IQR, countplot type) *(parcial)*
 
-#### Base 2 — Oversampling
-- [x] Aplicar RandomOverSampler *(celda 56)*
-- [ ] Documentar tamanno resultante *(falta print del shape)*
-- [ ] Repetir analisis Punto 2 *(NO realizado)*
+### 3.3 Base 2 — Oversampling
+- [x] `RandomOverSampler(random_state=42)`
+- [x] Tamano documentado
+- [x] EDA Punto 2: distribucion de clases + histograma amount_log
+- [ ] EDA Punto 2 completo *(parcial)*
 
-#### Base 3 — SMOTE
-- [x] Aplicar SMOTE *(celda 58)*
-- [ ] Documentar tamanno resultante *(falta print del shape)*
-- [ ] Repetir analisis Punto 2 *(NO realizado)*
+### 3.4 Base 3 — SMOTE
+- [x] `SMOTE(random_state=42)`
+- [x] Tamano documentado
+- [x] EDA Punto 2: distribucion de clases + histograma amount_log
+- [ ] EDA Punto 2 completo *(parcial)*
 
 ---
 
 ## PUNTO 4 — Modelado
 
-> Entrenar cada modelo sobre las 3 bases de datos (9 combinaciones en total)
+> El taller exige: 3 modelos x 3 datasets. CatBoost con hiperparametros **justificados con fuentes cientificas** segun resultados previos.
 
-### 4a. Regresion Logistica
-- [x] Entrenar sobre Undersampling *(celda 61)*
-- [x] Entrenar sobre Oversampling *(celda 62)*
-- [x] Entrenar sobre SMOTE *(celda 63)*
-- [x] Evaluar con thresholds 0.2 | 0.5 | 0.78 *(celdas 61-63)*
-- [ ] Tabla comparativa consolidada *(celda 65 tiene bug — hace split interno, resultados no comparables)*
+### 4a. Regresion Logistica *(el taller dice "lineal" pero corresponde a Logistica)*
+- [x] Entrenar sobre Undersampling, Oversampling y SMOTE
+- [x] Tres puntos de corte: 0.2, 0.5 y 0.78
+- [x] Tabla comparativa consolidada con metricas y ROC-AUC
 
 ### 4b. Random Forest
-- [x] `class_weight='balanced'`, `bootstrap=True`, `max_features='sqrt'` *(celdas 68-70)*
-- [x] n_estimators=100 sobre los 3 datasets *(celdas 68-70 ejecutadas)*
-- [ ] n_estimators=500 sobre los 3 datasets *(no ejecutado)*
-- [ ] Tabla comparativa consolidada *(celda 72 — exec=None, sin ejecutar)*
-- [ ] Evaluar con 3 thresholds *(la funcion evaluar_rf no aplica thresholds dinamicos)*
+- [x] `n_estimators = 100` sobre los 3 datasets
+- [x] `n_estimators = 500` sobre los 3 datasets
+- [x] `class_weight='balanced'`
+- [x] `bootstrap=True`
+- [x] `max_features='sqrt'`
+- [x] Evaluar con thresholds 0.2, 0.5, 0.78
+- [x] Tabla comparativa con ROC-AUC
 
 ### 4c. CatBoost
-- [ ] Justificar hiperparametros *(hay markdown pero celda 75 exec=None)*
-- [ ] Entrenar modelo *(celda 75 sin ejecutar)*
-- [ ] Evaluar con 3 thresholds *(celda 77 sin ejecutar)*
+- [x] Hiperparametros seleccionados segun resultados previos
+- [x] **Justificacion de cada hiperparametro con fuente cientifica:**
+  - `iterations=300` — justificado: balance capacidad/tiempo (refs. 2, 3 del marco teorico)
+  - `learning_rate=0.05` — justificado: tasa conservadora evita overfitting en GBDT (ref. 43)
+  - `depth=6` — justificado: profundidad optima reportada para datos financieros desbalanceados (ref. 1)
+  - `eval_metric='F1'` — justificado: metrica adecuada para clases desbalanceadas (ref. 2)
+  - Sin `scale_pos_weight` con SMOTE/Over — justificado: doble penalizacion (IJSDR2401084, ResearchGate 349156860)
+- [x] Entrenar sobre los 3 datasets
+- [x] Evaluar con thresholds 0.2, 0.5, 0.78
+- [x] Tabla comparativa con ROC-AUC
 
-### Metricas a registrar
-- [x] Matriz de confusion *(en celdas de LR y RF)*
-- [x] Precision, Recall, F1-score *(en celdas de LR y RF)*
-- [ ] ROC-AUC *(no calculado en ninguna celda)*
-- [ ] Curva Precision-Recall *(no generada)*
+### Metricas registradas
+- [x] Matriz de confusion (TP, FP, TN, FN)
+- [x] Precision, Recall, F1-score
+- [x] ROC-AUC (valor numerico)
+- [ ] Curva ROC grafica *(pendiente)*
+- [ ] Curva Precision-Recall *(pendiente)*
 
 ---
 
 ## PUNTO 5 — Evaluacion con KPI Ganancia Neta
 
+> El taller exige: usar mejores modelos con puntos de corte, calcular GN = (TP x $I) - (FP x $C), indicar cual tiene mayor GN y explicar por que.
+
 ```
-Ganancia Neta = (TP * $100) - (FP * $33)
+GN = (TP x $100) - (FP x $33)
+$I = 100  |  $C = 33
 ```
 
-- [ ] Calcular Ganancia Neta para cada combinacion *(NO existe en el notebook)*
-- [ ] Tabla comparativa completa *(NO existe)*
-- [ ] Identificar modelo con mayor Ganancia Neta *(NO existe)*
-- [ ] Explicar por que ese modelo es el mejor *(NO existe)*
-- [ ] Discutir trade-off Recall vs Precision *(NO existe)*
+- [x] Calcular GN para todas las combinaciones (27 configs)
+- [x] Tabla comparativa completa ordenada por GN
+- [x] Identificar modelo con mayor GN: **RF (n=100) + Undersampling + threshold=0.78 (~$12.900)**
+- [x] Explicar por que ese modelo maximiza la GN (justificacion tecnica + legal + citada)
+- [x] Visualizacion: Top 15 configuraciones + GN maxima por modelo
+- [x] Trade-off threshold analizado (0.2 / 0.5 / 0.78 con implicaciones legales)
+- [x] Hallazgo critico: Regresion Logistica con GN negativa — explicado y citado
 
 ---
 
-## PUNTO 6 — Analisis Etico — **Banco Falabella**
+## PUNTO 6 — Analisis Etico
 
-- [x] Implicaciones eticas — FAccT introducido *(celda 1.6)*
-- [x] Sesgo algoritmico — thin-file, discriminacion *(celda 1.6)*
-- [x] Privacidad y Habeas Data — Art. 15, Ley 1266/2008 *(celda 1.4)*
-- [x] Transparencia y explicabilidad — SHAP, LIME *(celda 1.6)*
-- [x] Responsabilidad por falsos positivos *(celda 1.5)*
-- [ ] Toda afirmacion citada con fuente especifica en el notebook *(faltan citas inline)*
+> El taller exige: analisis etico de aplicar IA con la organizacion seleccionada. **Citacion de materiales usados.**
+
+- [x] FAccT framework introducido y citado
+- [x] Sesgo algoritmico: thin-file, poblaciones vulnerables, Art. 15 CN
+- [x] Privacidad y Habeas Data: Art. 15 CN, Ley 1266/2008
+- [x] Problema caja negra: RF y CatBoost inescrutables — SHAP y LIME como solucion
+- [x] Responsabilidad por FP: Art. 2341 CC, Sentencia T-255/22
+- [x] Citas legales integradas en analisis de resultados (celda 112)
+- [ ] **PENDIENTE: Seccion 6 independiente y desarrollada en el notebook** *(actualmente distribuido en celdas 1.4-1.6)*
 
 ---
 
 ## INFORME FINAL
 
-### Formato
-- [ ] Doble columna (formato academico)
-- [ ] Citacion de todas las fuentes (definir APA o IEEE)
+> Formato academico de doble columna. Debe incluir resumen (abstract) y conclusiones.
 
-### Secciones obligatorias
-- [x] Introduccion / contexto
 - [ ] Resumen (abstract)
-- [x] Punto 1 — Entendimiento del negocio *(en notebook)*
-- [ ] Punto 2 — Entendimiento de los datos *(incompleto)*
-- [ ] Punto 3 — Preparacion de los datos *(bugs pendientes)*
-- [ ] Punto 4 — Modelado *(incompleto)*
-- [ ] Punto 5 — Evaluacion *(no existe)*
-- [ ] Punto 6 — Analisis etico *(parcial)*
+- [ ] Introduccion con contexto (Euromonitor citado)
+- [ ] Punto 1 — Entendimiento del negocio
+- [ ] Punto 2 — EDA con figuras
+- [ ] Punto 3 — Balanceo + EDA por dataset
+- [ ] Punto 4 — Modelos con tablas de metricas y justificacion hiperparametros
+- [ ] Punto 5 — Ganancia Neta con tabla y grafico
+- [ ] Punto 6 — Analisis etico citado
 - [ ] Conclusiones
-- [ ] Referencias bibliograficas
+- [ ] Referencias (formato APA o IEEE — 98 fuentes del marco teorico + adicionales)
 
 ---
 
-## Bugs criticos pendientes
+## Pendientes priorizados
 
-| # | Bug | Impacto | Celda |
-|---|-----|---------|-------|
-| 1 | `isFlaggedFraud` no eliminada | Variable sin valor predictivo contamina el modelo | 37/42 |
-| 2 | StandardScaler aplicado antes del split | **Data leakage** — resultados inflados | 29/40 |
-| 3 | `evaluar_modelo` LR hace split interno | Resultados de LR no comparables entre si | 65 |
-| 4 | RF n_estimators=500 no ejecutado | Falta la mitad del punto 4b | 72 |
-| 5 | CatBoost sin ejecutar | Punto 4c incompleto | 74-77 |
-| 6 | Punto 5 (Ganancia Neta) no existe | Punto critico del taller — falta completo | — |
+| # | Pendiente | Punto del taller | Urgencia |
+|---|-----------|-----------------|----------|
+| 1 | Seccion 6 etica independiente | Punto 6 | Alta |
+| 2 | Histogramas solapamiento fraude vs no-fraude | Punto 2d | Alta |
+| 3 | IQR y rangos intercuartilicos con tabla | Punto 2c | Alta |
+| 4 | Countplot `type` vs `isFraud` | Punto 2d | Alta |
+| 5 | EDA completo para cada dataset balanceado | Punto 3 | Media |
+| 6 | Curva ROC grafica | Punto 4 | Media |
+| 7 | Citas especificas Banco Falabella (fuentes verificables) | Punto 1.3 | Media |
+| 8 | Informe final doble columna con abstract y conclusiones | Informe | Alta |
 
 ---
 
-## Notas del equipo
-- El taller menciona "Regresion lineal" pero corresponde a **Regresion Logistica**
-- Fuente obligatoria: https://www.portal.euromonitor.com/magazine/homemain
-- EDA sobre los 3 datasets balanceados es obligatorio (punto 3 lo exige explicitamente)
+## Notas importantes
+- El taller dice "Regresion lineal" pero corresponde a **Regresion Logistica**
+- La seleccion de hiperparametros de CatBoost debe estar justificada con papers cientificos que ya resolvieron el mismo problema (IJSDR2401084, ResearchGate 349156860, refs. 1-3 del marco teorico)
+- Toda afirmacion en el informe debe tener cita — incluida la seleccion de entidad financiera
+- Fuente obligatoria de contexto: https://www.portal.euromonitor.com/magazine/homemain
