@@ -169,16 +169,17 @@ GN = (TP x $100) - (FP x $33)
 
 > Formato academico doble columna. Obligatorio: resumen (abstract) y conclusiones.
 
-- [ ] Abstract (resumen ejecutivo)
-- [ ] Introduccion con contexto y Euromonitor citado
-- [ ] Punto 1: Marco legal + Banco Falabella + etica
-- [ ] Punto 2: EDA con figuras del notebook
-- [ ] Punto 3: Balanceo + EDA por dataset balanceado
-- [ ] Punto 4: Modelos con tablas de metricas + **justificacion hiperparametros CatBoost con papers**
-- [ ] Punto 5: Ganancia Neta con tabla comparativa y grafico
-- [ ] Punto 6: Analisis etico citado
-- [ ] Conclusiones
-- [ ] Referencias en formato APA o IEEE
+- [x] Abstract (resumen ejecutivo)
+- [x] Introduccion con contexto y Euromonitor citado
+- [x] Punto 1: Marco legal + Banco Falabella + etica
+- [x] Punto 2: EDA con figuras del notebook
+- [x] Punto 3: Balanceo + EDA por dataset balanceado
+- [x] Punto 4: Modelos con tablas de metricas + **justificacion hiperparametros CatBoost con papers**
+- [x] Punto 5: Ganancia Neta con tabla comparativa y grafico
+- [x] Punto 6: Analisis etico citado
+- [x] Conclusiones
+- [x] Referencias en formato APA o IEEE (34 fuentes)
+- **Archivo:** `docs/Informe_Final_Deteccion_Fraude_Grupo1.docx`
 
 ---
 

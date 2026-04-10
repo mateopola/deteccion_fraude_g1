@@ -177,16 +177,16 @@ $I = 100  |  $C = 33
 
 > Formato academico de doble columna. Debe incluir resumen (abstract) y conclusiones.
 
-- [ ] Resumen (abstract)
-- [ ] Introduccion con contexto (Euromonitor citado)
-- [ ] Punto 1 — Entendimiento del negocio
-- [ ] Punto 2 — EDA con figuras
-- [ ] Punto 3 — Balanceo + EDA por dataset
-- [ ] Punto 4 — Modelos con tablas de metricas y justificacion hiperparametros
-- [ ] Punto 5 — Ganancia Neta con tabla y grafico
-- [ ] Punto 6 — Analisis etico citado
-- [ ] Conclusiones
-- [ ] Referencias (formato APA o IEEE — 98 fuentes del marco teorico + adicionales)
+- [x] Resumen (abstract) — incluido en `docs/Informe_Final_Deteccion_Fraude_Grupo1.docx`
+- [x] Introduccion con contexto (Euromonitor citado)
+- [x] Punto 1 — Entendimiento del negocio (marco legal, Banco Falabella, etica)
+- [x] Punto 2 — EDA con hallazgos clave (IQR, histogramas, correlaciones)
+- [x] Punto 3 — Balanceo + EDA por dataset (Under/Over/SMOTE)
+- [x] Punto 4 — Modelos con tablas de metricas y justificacion hiperparametros CatBoost con papers
+- [x] Punto 5 — Ganancia Neta con analisis del modelo ganador y trade-off thresholds
+- [x] Punto 6 — Analisis etico FAccT citado (Fairness/Accountability/Transparency)
+- [x] Conclusiones (6 conclusiones estructuradas)
+- [x] Referencias (34 fuentes en formato APA — Nilson, Euromonitor, arXiv, IEEE, leyes colombianas)
 
 ---
 
@@ -201,7 +201,7 @@ $I = 100  |  $C = 33
 | 5 | EDA completo para cada dataset balanceado | Punto 3 | Media |
 | 6 | Curva ROC grafica | Punto 4 | Media |
 | 7 | Citas especificas Banco Falabella (fuentes verificables) | Punto 1.3 | Media |
-| 8 | Informe final doble columna con abstract y conclusiones | Informe | Alta |
+| 8 | Informe final doble columna con abstract y conclusiones | Informe | ~~Alta~~ COMPLETADO |
 
 ---
 
