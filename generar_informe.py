@@ -19,7 +19,8 @@ from docx.oxml import OxmlElement
 from docx.enum.section import WD_SECTION
 
 # ─────────────────────────────────────────────────────────────
-FIGURES_DIR = 'docs/figures'
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+FIGURES_DIR = os.path.join(PROJECT_DIR, 'docs', 'figures')
 FIGURE_FILES = {
     'fig1_isfraude':    'fig1_distribucion_isfraude.png',
     'fig2_boxplots':    'fig2_boxplots.png',
@@ -140,16 +141,29 @@ run.font.size = Pt(14)
 run.bold = True
 title_p.paragraph_format.space_after = Pt(6)
 
+# Integrantes del equipo
 auth = doc.add_paragraph()
 auth.alignment = WD_ALIGN_PARAGRAPH.CENTER
-run = auth.add_run(
-    'Grupo 1 — Pontificia Universidad Javeriana\n'
-    'Especialización en Inteligencia Artificial | Módulo 4\n'
-    'Bogotá, Colombia — Abril 2026'
+r_inst = auth.add_run(
+    'Pontificia Universidad Javeriana — Especialización en Inteligencia Artificial | Módulo 4\n'
+    'Bogotá, Colombia — Abril 2026\n\n'
 )
-run.font.name = 'Times New Roman'
-run.font.size = Pt(10)
-run.italic = True
+r_inst.font.name = 'Times New Roman'
+r_inst.font.size = Pt(10)
+r_inst.italic = True
+
+r_label = auth.add_run('Grupo 1 — Integrantes:\n')
+r_label.font.name = 'Times New Roman'
+r_label.font.size = Pt(10)
+r_label.bold = True
+
+r_names = auth.add_run(
+    'Yulieth Carolina Pinto Pérez  •  Greyce Yeraldyn Hernández Reina\n'
+    'Mateo Polanco Rodríguez  •  Cristian Camilo Montenegro Orjuela\n'
+    'Sebastián Morales Quesada'
+)
+r_names.font.name = 'Times New Roman'
+r_names.font.size = Pt(10)
 auth.paragraph_format.space_after = Pt(10)
 
 # ─── ABSTRACT ───────────────────────────────────────────────
@@ -175,7 +189,7 @@ run = abs_p.add_run(
     '(Breiman, 2001) y CatBoost (Prokhorenkova et al., 2018), con umbrales 0,2 / 0,5 / 0,78. '
     'La métrica principal fue la Ganancia Neta (GN = TP×$100 − FP×$33), basada en aprendizaje '
     'sensible al costo (Elkan, 2001). La configuración óptima fue Random Forest (n=100) + '
-    'Undersampling + threshold=0,78 (GN ≈ $12.900, AUC-ROC > 0,99, F1 > 0,86). Se discuten '
+    'Oversampling + threshold=0,5 (GN = $164.000, AUC-ROC = 1,0000, TP=1.640, FP=0). Se discuten '
     'las implicaciones legales (Art. 246/2341, Art. 15 CN, Sentencia T-255/22) y éticas '
     '(FAccT — ACM, 2020), incluyendo la necesidad de explicabilidad algorítmica mediante '
     'SHAP (Lundberg & Lee, 2017) y LIME (Ribeiro et al., 2016).'
@@ -484,7 +498,7 @@ para(doc,
     'RF n=100/n=500). La Figura 8 muestra el Top 15 de configuraciones por GN. '
     'La configuración óptima fue:'
 )
-para(doc, 'Random Forest (n=100) + Undersampling + threshold=0,78 → GN ≈ $12.900',
+para(doc, 'Random Forest (n=100) + Oversampling + threshold=0,5 → GN = $164.000',
     bold=True, align=WD_ALIGN_PARAGRAPH.CENTER)
 para(doc,
     'Este resultado se explica por la interacción de tres factores: (i) Undersampling '
@@ -498,7 +512,7 @@ para(doc,
 insert_figure(doc, 'fig8_gn',
     'Figura 8. Top 15 configuraciones por Ganancia Neta y GN máxima por modelo. '
     'Elaboración propia con dataset PaySim (Kaggle, 2017). '
-    'Ganador: RF(n=100) + Undersampling + t=0,78 (GN ≈ $12.900).')
+    'Ganador: RF(100) + Oversampling + t=0,5 (GN=$164.000 | TP=1.640 | FP=0).')
 
 heading(doc, '5.3. Hallazgo: Regresión Logística con GN Negativa', 2)
 para(doc,
@@ -513,13 +527,13 @@ para(doc,
 
 heading(doc, '5.4. Análisis del Trade-off por Threshold', 2)
 para(doc,
-    'El análisis de trade-off revela implicaciones legales directas: threshold=0,2 maximiza '
-    'Recall (detecta más fraudes) pero genera FP que vulneran el Art. 15 CN '
-    '(Sentencia T-255/22 — Corte Constitucional, 2022); threshold=0,78 equilibra la GN '
-    'con el cumplimiento legal; threshold=0,5 es el compromiso teórico pero subóptimo '
-    'bajo la función de costo $I/$C = 3,03 (Elkan, 2001). La Circular SFC 029/2014 exige '
-    'un procedimiento expedito de reactivación para bloqueos, lo que hace crítico minimizar '
-    'FP operativamente.'
+    'El análisis de trade-off sobre los resultados reales revela que threshold=0,5 resultó '
+    'ser el punto óptimo para RF + Oversampling (GN=$164.000, FP=0), mientras que threshold=0,2 '
+    'incrementa FP con implicaciones legales directas bajo el Art. 15 CN (Sentencia T-255/22 — '
+    'Corte Constitucional, 2022). Threshold=0,78 es más conservador (prioriza Precision sobre '
+    'Recall) y resulta adecuado cuando el costo jurídico de los FP es más alto que el costo '
+    'financiero de los FN. La Circular SFC 029/2014 exige procedimiento expedito de '
+    'reactivación para bloqueos, lo que hace crítico minimizar FP operativamente.'
 )
 
 # ════════════════════════════════════════════════════════════
@@ -585,17 +599,18 @@ para(doc,
     'con desbalance severo. El tratamiento correcto del data leakage (Kaufman et al., 2012) '
     'y la selección de métrica objetivo (GN vs Accuracy) son determinantes para obtener '
     'resultados válidos en producción.\n\n'
-    '2. Random Forest (n=100) + Undersampling + threshold=0,78 es la configuración óptima '
-    '(GN ≈ $12.900, AUC > 0,99, F1 > 0,86). Undersampling preserva patrones genuinos sin '
-    'artefactos sintéticos (He & Garcia, 2009); n=100 árboles es suficiente para convergencia '
-    '(Oshiro et al., 2012); threshold=0,78 equilibra la función de costo $I/$C = 3,03 '
-    '(Elkan, 2001) con el marco legal colombiano (Sentencia T-255/22).\n\n'
-    '3. La Regresión Logística tiene GN < 0 por sus límites de decisión lineales '
-    '(Bahnsen et al., 2016), pero es insustituible como modelo interpretable para '
-    'reportes regulatorios ante la SFC (FAccT — ACM, 2020).\n\n'
-    '4. El umbral de decisión es el parámetro más crítico del sistema desde la perspectiva '
-    'legal: threshold=0,78 cumple el Art. 15 CN y la Sentencia T-255/22, mientras '
-    'threshold=0,2 generaría una cascada de FP con consecuencias jurídicas graves.\n\n'
+    '2. Random Forest (n=100) + Oversampling + threshold=0,5 es la configuración óptima '
+    '(GN = $164.000, AUC = 1,0000, TP=1.640, FP=0). El modelo detecta el 99,8% de los fraudes '
+    'sin bloquear ningún cliente legítimo. Oversampling conserva todos los datos originales; '
+    'n=100 árboles es suficiente para convergencia (Oshiro et al., 2012); threshold=0,5 es el '
+    'punto de equilibrio óptimo bajo la función de costo $I/$C = 3,03 (Elkan, 2001).\n\n'
+    '3. La Regresión Logística tiene GN negativa en todas las configuraciones por sus límites '
+    'de decisión lineales (Bahnsen et al., 2016), pero es insustituible como modelo '
+    'interpretable para reportes regulatorios ante la SFC (FAccT — ACM, 2020).\n\n'
+    '4. El umbral de decisión tiene implicaciones legales directas: un threshold bajo '
+    'maximiza Recall pero genera FP que vulneran el Art. 15 CN (Sentencia T-255/22); '
+    'threshold=0,5 y 0,78 priorizan Precision, protegiendo a los clientes legítimos '
+    'y cumpliendo la Circular SFC 029/2014.\n\n'
     '5. La implementación de XAI (SHAP/LIME) no es opcional: es requerimiento de debido '
     'proceso ante la Corte Constitucional (Sentencia T-255/22) y exigencia operativa para '
     'que los analistas de riesgo puedan auditar el sistema (Lundberg & Lee, 2017; '
